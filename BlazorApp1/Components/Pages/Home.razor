@@ -1,0 +1,49 @@
+﻿@page "/"
+@using BlazorApp1.Components.Controls
+@using BlazorApp1.Models
+
+<PageTitle>Home</PageTitle>
+
+
+<FluentStack
+    Orientation="Orientation.Horizontal"
+    HorizontalAlignment="HorizontalAlignment.Center"
+    Wrap="true"
+    VerticalGap="12"
+    HorizontalGap="12">
+    @for (int i = 0; i < 10; i++)
+    {
+        MyBaseModel myModel = new MyBaseModel()
+        {
+            Title = $"my title {i}",
+            Description = $"my description {i}",
+            CustomColor = @GetColor(i),
+            CreatedAt = DateTime.UtcNow.AddDays(-i)
+        };
+        P42CardBadges badges = new P42CardBadges()
+        {
+            { myModel.CreatedAt.ToString("dd/MM/yyyy"), myModel.CustomColor},
+            {"cool", "lightblue"}
+        };
+        <P42Card
+            TData="MyBaseModel"
+            Title="@myModel.Title"
+            Description="@myModel.Description"
+            CustomColor="@myModel.CustomColor"
+            CustomIconColor="@myModel.CustomColor"
+            CardType="url"
+            Data="@myModel"
+            Badges="@badges" 
+            OnCardClick="@(() => Console.WriteLine($"clicked on {@myModel.Title}"))"
+            UniqueId="@Guid.NewGuid().ToString()"
+        />
+    }
+</FluentStack>
+
+@code
+{
+    string GetColor(int i)
+    {
+        return $"#{(0xB0 + i * 23) % 0x50 + 0xB0:X2}{(0xC0 + i * 47) % 0x40 + 0xC0:X2}{(0xD0 + i * 31) % 0x30 + 0xD0:X2}";
+    }
+}

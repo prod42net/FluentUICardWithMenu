@@ -1,0 +1,135 @@
+@using Microsoft.AspNetCore.Authorization
+@typeparam TData
+<div>
+
+
+    <FluentCard
+        Class="@($"card-wrapper {(_isHovered ? "card-wrapper--hovered" : "")}")"
+        @onmouseenter="@(() => _isHovered = true)"
+        @onmouseleave="@(() => _isHovered = false)"
+        style="@($"width: 300px; height: 120px; cursor:pointer; --card-custom-color: {@CustomColor};")"
+        @onclick="@CardClick">
+        <FluentStack
+            VerticalGap="0"
+            HorizontalGap="2"
+            Orientation="Orientation.Horizontal"
+
+        >
+            <FluentStack
+                Width="35"
+                Orientation="Orientation.Vertical"
+                VerticalGap="0"
+            >
+                @if (string.IsNullOrWhiteSpace(CustomIconColor))
+                {
+                    <FluentIcon
+                        Value="@(Icon ?? (new Icons.Regular.Size24.CardUi()))"
+                        Color="Color.Accent"/>
+                }
+                else
+                {
+                    <FluentIcon
+                        Value="@(Icon ?? (new Icons.Regular.Size24.CardUi()))"
+                        Color="Color.Custom"
+
+                        CustomColor="@CustomIconColor"/>
+                }
+            </FluentStack>
+
+            <FluentStack
+                Orientation="Orientation.Vertical"
+                VerticalGap="2"
+            >
+                <div class="card-title one-line">
+                    @Title
+                </div>
+
+                <div class="card-text two-lines">
+                    @{
+                        int ml = Description.Length;
+                        string description = "";
+                        description = Description.Substring(0, (ml > 100 ? 100 : ml));
+                    }
+                    @description
+                </div>
+                <FluentStack
+                    Orientation="Orientation.Horizontal"
+                    HorizontalGap="4"
+                    
+                    
+                >
+
+                    @if (_isHovered)
+                    {
+                        <FluentBadge
+                            Appearance="Appearance.Neutral"
+                            Height="15px">
+                            @CardType
+                        </FluentBadge>
+
+                        @foreach (var badge in Badges)
+                        {
+                            <FluentBadge 
+                                Fill="lowlight" 
+                              
+                                BackgroundColor="@badge.Value"
+                                Color="black"
+                                >
+                                @badge.Key
+                            </FluentBadge>
+                        }
+                    }
+
+
+                </FluentStack>
+            </FluentStack>
+            <FluentStack
+                Width="35px"
+                Orientation="Orientation.Vertical"
+                VerticalAlignment="VerticalAlignment.Top">
+                @if (_isHovered)
+                {
+                    string bla = "";
+                    string id = UniqueId;// Guid.NewGuid().ToString(); @($"{id}")
+                                <FluentButton Id="@UniqueId"
+                                  Appearance="Appearance.Lightweight"
+                                  IconStart="@(new Icons.Regular.Size20.LineHorizontal1Dot())"
+                                  StopPropagation="true"
+                                  OnClick="@(() => _open = !_open)"
+                    >
+                                <FluentMenu 
+                                    UseMenuService="true" 
+                                    Anchor="@UniqueId" 
+                                    Anchored="true" 
+                                    @bind-Open="@_open" 
+                                    VerticalThreshold="170">
+                                    <FluentMenuItem KeepOpen="false" OnClick="@((e) => Console.WriteLine("Item 1 Clicked"))">
+                                        Menu item 1
+                                    </FluentMenuItem>
+                                    <FluentMenuItem OnClick="@((e) => Console.WriteLine("Item 2 Clicked"))"
+                                                    Checked="true">
+                                        Menu item 2 Checked
+                                    </FluentMenuItem>
+                                    <FluentMenuItem OnClick="@((e) => Console.WriteLine("Item 3 Clicked"))"
+                                                    Disabled="true">
+                                        Menu item 3 Disabled
+                                    </FluentMenuItem>
+                                    <FluentMenuItem OnClick="@((e) => Console.WriteLine("Item 4 Clicked"))">
+                                        <span slot="start"><FluentIcon Value="@(new Icons.Regular.Size24.ClipboardPaste())"
+                                                                       Color="Color.Neutral" Slot="start"/></span>
+                                        Menu item 4 with Icon
+                                    </FluentMenuItem>
+                                </FluentMenu>
+                                </FluentButton>
+                }
+            </FluentStack>
+        </FluentStack>
+    </FluentCard>
+
+</div>
+
+@code
+{
+    bool _open = false;
+    //   @* Class="@($"card-wrapper {(_isHovered ? "card-wrapper--hovered" : "")}")" *@
+}
